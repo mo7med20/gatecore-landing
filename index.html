@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GateCore — Unified On-Prem Infrastructure Platform</title>
+<meta name="description" content="GateCore replaces your reverse proxy, firewall, API gateway, and load balancer on commodity x86 hardware. One platform, one API, one audit trail. Built in Go. Priced for real teams.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:title" content="GateCore — Unified On-Prem Infrastructure Platform">
+<meta property="og:description" content="One platform. Every layer of your on-prem infrastructure. One binary, one API, one audit trail — on commodity x86 hardware.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/gatecore-logo.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/gatecore-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="image" href="assets/gatecore-logo.jpg">
+<script>
+  /* Light is the explicit default on every page load. */
+  (function () {
+    var d = document.documentElement;
+    d.classList.add('js');
+    d.removeAttribute('data-theme');
+    try { localStorage.removeItem('gatecore-theme'); } catch (e) {}
+    try {
+      if (localStorage.getItem('gatecore-lang') === 'ar') {
+        d.lang = 'ar'; d.dir = 'rtl';
+      }
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
+
+<!-- ============ ICON SPRITE (Lucide, 24px grid, 2px stroke) ============ -->
+<svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2 4.1 12.6a1 1 0 0 0 .8 1.6H11l-1 7.8 8.9-10.6a1 1 0 0 0-.8-1.6H12z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m10.7 12.3 8.8-8.8M17 6l2.5 2.5M14.5 8.5 17 11"/></symbol>
+  <symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-4l-3 8-6-16-3 8H2"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 2 4 5.5V11c0 5 3.4 9.4 8 10.5 4.6-1.1 8-5.5 8-10.5V5.5z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="i-blocks" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-package" viewBox="0 0 24 24"><path d="m7.5 4.3 9 5.2M21 16V8a2 2 0 0 0-1-1.7l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.7l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="M3.3 7 12 12l8.7-5M12 22V12"/></symbol>
+  <symbol id="i-banknote" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/></symbol>
+  <symbol id="i-branch" viewBox="0 0 24 24"><circle cx="6" cy="5" r="2.5"/><circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="9" r="2.5"/><path d="M6 7.5v9M18 11.5c0 3-2.5 4-6 4.2"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2.5 6.5 8.4 6.1a2 2 0 0 0 2.2 0l8.4-6.1"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.2 2.4 2.4 4.6-4.9"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4.5 19 12 6 19.5z"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7" r="3.5"/><path d="M22 20v-1.5a4 4 0 0 0-3-3.9M16.5 4.1a4 4 0 0 1 0 5.8"/></symbol>
+  <symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 1.5v4M12 18.5v4M1.5 12h4M18.5 12h4"/></symbol>
+  <symbol id="i-heart-pulse" viewBox="0 0 24 24"><path d="M19.5 12.6 12 20l-7.5-7.4A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 7.5 5.5Z"/><path d="M3.5 12.5h3.2l1.6-2.6 2 5 1.7-3.4 1 1h3.5"/></symbol>
+  <symbol id="i-server" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="7" rx="2"/><rect x="2" y="14" width="20" height="7" rx="2"/><path d="M6 6.5h.01M6 17.5h.01"/></symbol>
+  <symbol id="i-file-check" viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h5M9 15l2 2 4-4"/></symbol>
+</svg>
+
+<!-- ============ 3.1 NAVBAR ============ -->
+<header class="nav" id="nav">
+  <div class="container nav__inner">
+    <a class="brand notranslate" translate="no" href="#top" aria-label="GateCore — home">
+      <img class="brand__img" src="assets/gatecore-logo.jpg" alt="" width="40" height="40" decoding="async">
+      <span class="brand__word" translate="no">GateCore</span>
+    </a>
+
+    <nav class="nav__drawer" id="nav-drawer" aria-label="Primary">
+      <ul class="nav__links">
+        <li><a href="#demo" data-i18n="nav.product">Product</a></li>
+        <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
+        <li><a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a></li>
+        <li><a href="https://www.linkedin.com/company/gatecore" target="_blank" rel="noopener" data-i18n="nav.docs">Docs</a></li>
+      </ul>
+      <div class="nav__drawer-cta">
+        <button class="btn btn--outline btn--block lang" type="button" lang="ar" aria-label="التبديل إلى العربية" aria-pressed="false">العربية</button>
+        <button class="btn btn--primary btn--block js-trial" type="button">Start Free Trial</button>
+      </div>
+    </nav>
+
+    <div class="nav__actions">
+      <button class="theme" id="theme" type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Toggle theme">
+        <svg class="theme__sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"/>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+        </svg>
+        <svg class="theme__moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+      <button class="btn btn--ghost btn--sm nav__desk lang" id="lang" type="button" lang="ar" aria-label="التبديل إلى العربية" aria-pressed="false">العربية</button>
+      <button class="btn btn--primary btn--sm nav__desk js-trial" type="button">Start Free Trial</button>
+      <button class="nav__burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-drawer">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="nav__scrim" id="navScrim"></div>
+</header>
+
+<main id="main">
+<span id="top"></span>
+
+<!-- ============ 3.2 HERO ============ -->
+<section class="hero">
+  <div class="hero__texture" aria-hidden="true"></div>
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <button class="pill js-to-roadmap" type="button">
+        <span class="pill__dot" aria-hidden="true"></span>
+        <span class="mono">v1.0.0 GA</span>
+        <span class="pill__sep" aria-hidden="true">—</span>
+        Now Available
+      </button>
+
+      <h1 class="hero__title">
+        One Platform. Every Layer of Your
+        <span class="grad">On-Prem Infrastructure.</span>
+      </h1>
+
+      <p class="hero__sub">
+        GateCore replaces your reverse proxy, firewall, API gateway, load balancer,
+        and VPN appliance — on commodity x86 hardware — with a single
+        software-defined platform your team actually understands.
+      </p>
+
+      <div class="hero__cta">
+        <button class="btn btn--primary btn--lg js-trial" type="button">Start Free Trial</button>
+        <a class="btn btn--outline btn--lg" href="#demo">Learn More</a>
+      </div>
+
+      <ul class="hero__stats">
+        <li><strong class="mono">0.8ms</strong><span>median proxy overhead</span></li>
+        <li><strong class="mono">1</strong><span>binary to deploy</span></li>
+        <li><strong class="mono">6</strong><span>appliances retired</span></li>
+      </ul>
+    </div>
+
+    <div class="hero__visual">
+      <div class="flowpanel">
+        <div class="flowpanel__bar">
+          <span class="dot dot--r" aria-hidden="true"></span><span class="dot dot--y" aria-hidden="true"></span><span class="dot dot--g" aria-hidden="true"></span>
+          <span class="mono flowpanel__file">gatecore — traffic path</span>
+        </div>
+        <svg class="flow" viewBox="0 0 460 470" role="img" aria-label="Traffic flowing from clients through the GateCore traffic engine to the corporate network">
+          <defs>
+            <linearGradient id="gBox" x1="0" y1="0" x2="1" y2="1">
+              <stop class="gbox-a" offset="0%" stop-color="#1E293B"/>
+              <stop class="gbox-b" offset="100%" stop-color="#172033"/>
+            </linearGradient>
+          </defs>
+
+          <!-- connectors -->
+          <path class="flow__wire" d="M230 40 V96" fill="none" stroke="#3B82F6" stroke-opacity=".55" stroke-width="2"/>
+          <path class="flow__wire" d="M230 176 V232" fill="none" stroke="#3B82F6" stroke-opacity=".55" stroke-width="2"/>
+          <path class="flow__wire" d="M230 312 V368" fill="none" stroke="#3B82F6" stroke-opacity=".55" stroke-width="2"/>
+
+          <!-- traffic packets -->
+          <circle class="pkt" cx="230" r="3.4" fill="#3B82F6"><animate attributeName="cy" values="40;96" dur="1.9s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.9s" repeatCount="indefinite"/></circle>
+          <circle class="pkt" cx="230" r="3.4" fill="#60A5FA"><animate attributeName="cy" values="40;96" dur="1.9s" begin="0.63s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.9s" begin="0.63s" repeatCount="indefinite"/></circle>
+          <circle class="pkt" cx="230" r="3.4" fill="#3B82F6"><animate attributeName="cy" values="176;232" dur="1.6s" begin="0.3s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.6s" begin="0.3s" repeatCount="indefinite"/></circle>
+          <circle class="pkt" cx="230" r="3.4" fill="#93C5FD"><animate attributeName="cy" values="176;232" dur="1.6s" begin="0.95s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="1.6s" begin="0.95s" repeatCount="indefinite"/></circle>
+          <circle class="pkt" cx="230" r="3.4" fill="#3B82F6"><animate attributeName="cy" values="312;368" dur="2.2s" begin="0.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="0;1;1;0" dur="2.2s" begin="0.5s" repeatCount="indefinite"/></circle>
+
+          <!-- layer 1 -->
+          <g class="flow__node">
+            <rect x="55" y="0" width="350" height="80" rx="12" fill="url(#gBox)" stroke="#334155"/>
+            <text class="flow__kicker" x="230" y="28">CLIENTS</text>
+            <text class="flow__title" x="230" y="56">Web · Mobile · Partners</text>
+          </g>
+
+          <!-- layer 2 : gatecore core -->
+          <g class="flow__node flow__node--core">
+            <rect x="30" y="136" width="400" height="80" rx="12" fill="#0B1B36" stroke="#3B82F6"/>
+            <text class="flow__kicker flow__kicker--a" x="230" y="164">GATECORE TRAFFIC ENGINE · v1.0</text>
+            <text class="flow__title flow__title--a" x="230" y="192">Proxy · TLS · LB · WAF · RBAC</text>
+          </g>
+
+          <!-- layer 3 -->
+          <g class="flow__node flow__node--future">
+            <rect x="85" y="272" width="290" height="80" rx="12" fill="url(#gBox)" stroke="#334155" stroke-dasharray="6 5"/>
+            <text class="flow__kicker" x="230" y="300">DATA PLANE · v1.1</text>
+            <text class="flow__title" x="230" y="328">Metering · Quota · Billing</text>
+          </g>
+
+          <!-- layer 4 -->
+          <g class="flow__node flow__node--future">
+            <rect x="85" y="368" width="290" height="80" rx="12" fill="url(#gBox)" stroke="#334155" stroke-dasharray="6 5"/>
+            <text class="flow__kicker" x="230" y="396">CORPORATE NETWORK · v1.5</text>
+            <text class="flow__title" x="230" y="424">SDN · Firewall · VPN · DNS</text>
+          </g>
+        </svg>
+
+        <div class="flowpanel__foot">
+          <span class="mono"><span class="pulse" aria-hidden="true"></span> listening on :8443</span>
+          <span class="mono flowpanel__muted">0 errors · 12.4k req/s</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3.3 SOCIAL PROOF ============ -->
+<section class="proof">
+  <div class="container">
+    <p class="proof__lead">Purpose-built for fintech SREs · Healthcare IT · MSPs · Regulated Infrastructure</p>
+    <p class="proof__sub">Built in Go. Runs on anything. Trusted where downtime is not an option.</p>
+    <ul class="proof__cats" aria-label="Target categories">
+      <li class="cat">Fintech</li>
+      <li class="cat">Healthcare</li>
+      <li class="cat">MSP</li>
+      <li class="cat">Regulated Infra</li>
+      <li class="cat">Homelab</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ 3.4 PROBLEM ============ -->
+<section class="sec sec--white" id="problem">
+  <div class="container">
+    <div class="problem__grid">
+      <div class="problem__copy reveal">
+        <span class="eyebrow">The problem</span>
+        <h2>Your infrastructure stack is held together with vendor contracts and SSH sessions.</h2>
+        <p>
+          Most on-prem teams run 4–7 different appliances — each from a different vendor,
+          each with its own dashboard, audit log, upgrade cycle, and support contract.
+          One misconfiguration costs you an RCA.
+        </p>
+        <p class="problem__punch">
+          GateCore is one binary. One API. <span class="grad-text">One audit trail.</span>
+        </p>
+      </div>
+
+      <div class="stack reveal">
+        <div class="stack__row">
+          <span>Your rack today</span><span>GateCore</span>
+        </div>
+        <ul class="stack__list">
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Reverse proxy appliance</li>
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Next-gen firewall</li>
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> API gateway</li>
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> Load balancer</li>
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> VPN concentrator</li>
+          <li><svg class="ic ic--bad" aria-hidden="true" focusable="false"><use href="#i-x"/></svg> DHCP / DNS server</li>
+        </ul>
+        <div class="stack__sum">
+          <div><strong class="mono stack__bad">6 vendors</strong><span>6 support contracts</span></div>
+          <svg class="stack__arrow" aria-hidden="true" focusable="false"><use href="#i-arrow-right"/></svg>
+          <div><strong class="mono stack__good">1 binary</strong><span>1 API · 1 audit log</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pains">
+      <article class="pain reveal">
+        <span class="pain__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-banknote"/></svg></span>
+        <h3>Six-figure appliance renewals</h3>
+        <p class="pain__lab">GateCore</p>
+        <p>Software license on commodity hardware. No hardware refresh cycle.</p>
+      </article>
+      <article class="pain reveal">
+        <span class="pain__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-branch"/></svg></span>
+        <h3>Fragmented audit trails</h3>
+        <p class="pain__lab">GateCore</p>
+        <p>Single unified audit log, HMAC-signed and RBAC-enforced, exportable in one call.</p>
+      </article>
+      <article class="pain reveal">
+        <span class="pain__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-lock"/></svg></span>
+        <h3>Vendor lock-in &amp; black-box firmware</h3>
+        <p class="pain__lab">GateCore</p>
+        <p>Open SDK, full source delivery, and a Go binary you can read end to end.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3.5 WHAT IS GATECORE ============ -->
+<section class="sec sec--soft" id="product">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">What is GateCore</span>
+      <h2>Not just a proxy. Not just a firewall. A Unified On-Prem Infrastructure Platform.</h2>
+      <p>
+        GateCore v1.0 ships today as a Secure Application Gateway.
+        The platform evolves with you — the same binary, the same API,
+        the same team — as you grow.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <article class="ver ver--now reveal">
+        <div class="ver__top"><span class="ver__tag">Available Now</span><span class="mono ver__num">v1.0</span></div>
+        <h3>Secure App Gateway</h3>
+        <ul>
+          <li>Reverse proxy</li><li>Load balancing</li><li>TLS termination</li>
+          <li>ACL &amp; RBAC</li><li>Metrics</li><li>Plugin system</li>
+        </ul>
+      </article>
+
+      <article class="ver reveal">
+        <div class="ver__top"><span class="ver__tag">Q1 2027</span><span class="mono ver__num">v1.1</span></div>
+        <h3>App + API Security</h3>
+        <ul>
+          <li>WAF</li><li>Rate limiting</li><li>API key management</li>
+          <li>Threat analytics</li>
+        </ul>
+      </article>
+
+      <article class="ver reveal">
+        <div class="ver__top"><span class="ver__tag">Q3 2027</span><span class="mono ver__num">v1.5</span></div>
+        <h3>On-Prem Security Gateway</h3>
+        <ul><li>Firewall</li><li>NAT</li><li>VPN</li><li>DNS</li><li>DHCP</li></ul>
+      </article>
+
+      <article class="ver reveal">
+        <div class="ver__top"><span class="ver__tag">2028</span><span class="mono ver__num">v2.0</span></div>
+        <h3>Unified Platform</h3>
+        <ul><li>Replace every network &amp; security appliance</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3.6 FEATURE GRID ============ -->
+<section class="sec sec--white">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">Capabilities</span>
+      <h2>Everything v1.0 ships, on day one.</h2>
+    </div>
+    <div class="features">
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-zap"/></svg></span>
+        <h3>Go-native performance</h3>
+        <p>Sub-millisecond proxy, zero GC pressure under sustained load. Runs lean on commodity x86.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-key"/></svg></span>
+        <h3>Ed25519 License System</h3>
+        <p>Tier-based feature enforcement. Trial → Community → Professional → Enterprise, cleanly gated.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-activity"/></svg></span>
+        <h3>Live Traffic Dashboard</h3>
+        <p>Real-time SSE traffic stream, historical metrics snapshots, Prometheus-compatible <code class="notranslate" translate="no">/metrics</code>.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-shield"/></svg></span>
+        <h3>Full RBAC &amp; Audit</h3>
+        <p>Every API call, every config change — logged, attributed, exportable. Multi-role, multi-tenant.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-blocks"/></svg></span>
+        <h3>Plugin Architecture</h3>
+        <p>Ship your logic as a plugin. The platform calls it; the audit trail owns it. SDK in v1.5.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-package"/></svg></span>
+        <h3>One Binary, Full Stack</h3>
+        <p>No microservice sprawl. Deploy with a single zip, manage with a single API, upgrade with one command.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3.6b PRODUCT SHOWCASE ============ -->
+<section class="sec sec--white" id="demo">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">See it in action</span>
+      <h2>One binary. This is what it looks like.</h2>
+    </div>
+
+    <div class="demo-tabs" role="tablist" aria-label="Product views">
+      <button class="demo-tab is-on" id="tabbtn-terminal" type="button" role="tab" aria-selected="true" aria-controls="tab-terminal" data-tab="terminal">
+        <svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-play"/></svg> Terminal
+      </button>
+      <button class="demo-tab" id="tabbtn-traffic" type="button" role="tab" aria-selected="false" aria-controls="tab-traffic" data-tab="traffic" tabindex="-1">
+        <svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-activity"/></svg> Live Traffic
+      </button>
+      <button class="demo-tab" id="tabbtn-backends" type="button" role="tab" aria-selected="false" aria-controls="tab-backends" data-tab="backends" tabindex="-1">
+        <svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-server"/></svg> Backends
+      </button>
+    </div>
+
+    <!-- Tab: Terminal -->
+    <div class="demo-panel notranslate" id="tab-terminal" role="tabpanel" aria-labelledby="tabbtn-terminal" tabindex="0" translate="no" dir="ltr">
+      <div class="flowpanel">
+        <div class="flowpanel__bar">
+          <span class="dot dot--r" aria-hidden="true"></span>
+          <span class="dot dot--y" aria-hidden="true"></span>
+          <span class="dot dot--g" aria-hidden="true"></span>
+          <span class="mono flowpanel__file">$ ./gatecore start</span>
+        </div>
+        <pre class="demo-term mono"><span class="term-dim">GateCore v1.0.0 — Unified On-Prem Infrastructure Platform</span>
+
+<span class="term-ok"></span> License validated       <span class="term-dim">Professional · node-1 · expires 2027-10-11</span>
+<span class="term-ok"></span> RBAC loaded             <span class="term-dim">3 roles · 12 permissions</span>
+<span class="term-ok"></span> ACL engine ready        <span class="term-dim">4 rules active</span>
+<span class="term-ok"></span> TLS certificates loaded <span class="term-dim">RSA-2048 · auto-renew enabled</span>
+<span class="term-ok"></span> Plugin system online    <span class="term-dim">2 plugins registered</span>
+<span class="term-ok"></span> Management API          <span class="term-dim">:8443 (TLS)</span>
+<span class="term-ok"></span> Traffic engine          <span class="term-dim">:80 · :443</span>
+<span class="term-ok"></span> Metrics endpoint        <span class="term-dim">/metrics/json · Prometheus /metrics</span>
+
+<span class="term-rdy">→ GateCore ready.</span></pre>
+        <div class="flowpanel__foot">
+          <span class="mono"><span class="pulse" aria-hidden="true"></span> uptime 00:04:12</span>
+          <span class="mono flowpanel__muted">0 errors · 8.3k req/s</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab: Live Traffic -->
+    <div class="demo-panel" id="tab-traffic" role="tabpanel" aria-labelledby="tabbtn-traffic" tabindex="0" hidden>
+      <figure class="shot">
+        <img id="shotTraffic" class="demo-screenshot" src="assets/screenshot-traffic.svg"
+             data-light="assets/screenshot-traffic-light.svg" data-dark="assets/screenshot-traffic.svg"
+             alt="GateCore Live Traffic Dashboard" width="1100" height="580" loading="lazy" decoding="async">
+        <figcaption class="shot__cap">
+          <span class="mono">Live Traffic</span>
+          <span>Real-time SSE stream, historical snapshots, Prometheus-compatible <code class="notranslate" translate="no">/metrics</code>.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- Tab: Backends -->
+    <div class="demo-panel" id="tab-backends" role="tabpanel" aria-labelledby="tabbtn-backends" tabindex="0" hidden>
+      <figure class="shot">
+        <img id="shotBackends" class="demo-screenshot" src="assets/screenshot-backends.svg"
+             data-light="assets/screenshot-backends-light.svg" data-dark="assets/screenshot-backends.svg"
+             alt="GateCore Backends Management" width="1100" height="580" loading="lazy" decoding="async">
+        <figcaption class="shot__cap">
+          <span class="mono">Backends</span>
+          <span>Upstream servers, health checks and per-node request rates from one table.</span>
+        </figcaption>
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ 3.7 ARCHITECTURE ============ -->
+<section class="sec sec--soft" id="architecture">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">Architecture</span>
+      <h2>Designed from day one to own every layer.</h2>
+    </div>
+
+    <div class="arch reveal">
+      <button class="arch__layer" type="button" data-tip="Dashboard · REST API · RBAC · Policy — the single control surface for every layer below.">
+        <span class="arch__badge arch__badge--live">Live in v1.0</span>
+        <span class="arch__name">Management Plane</span>
+        <span class="arch__items">Dashboard · REST API · RBAC · Policy</span>
+      </button>
+
+      <div class="arch__link" aria-hidden="true"></div>
+
+      <button class="arch__layer" type="button" data-tip="Container orchestration, load balancing, auto-scaling and health checks — shipping next.">
+        <span class="arch__badge arch__badge--next">Next</span>
+        <span class="arch__name">Infra Management Engine</span>
+        <span class="arch__items">Container Orchestration · LB · Auto-Scaling · Health Checks</span>
+      </button>
+
+      <div class="arch__link" aria-hidden="true"></div>
+
+      <button class="arch__layer" type="button" data-tip="Bandwidth metering, quota enforcement and billing on the same box. Target: v1.1.">
+        <span class="arch__badge arch__badge--plan">Planned v1.1</span>
+        <span class="arch__name">Data Plane System</span>
+        <span class="arch__items">Bandwidth Metering · Quota · Billing</span>
+      </button>
+
+      <div class="arch__link" aria-hidden="true"></div>
+
+      <button class="arch__layer arch__layer--ghost" type="button" data-tip="SDN, firewalls, proxies and DNS/DHCP on commodity hardware. Target: v1.5.">
+        <span class="arch__badge arch__badge--plan">Planned v1.5</span>
+        <span class="arch__name">Corporate Network Layer</span>
+        <span class="arch__items">SDN · Firewalls · Proxies</span>
+      </button>
+    </div>
+
+    <p class="arch__cap reveal">Every layer shares one API surface, one audit store, and one upgrade path. No vendor per tier. No integration glue.</p>
+  </div>
+</section>
+
+<!-- ============ 3.8 ROADMAP ============ -->
+<section class="sec sec--white" id="roadmap">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">Vision</span>
+      <h2>A four-act plan to replace your entire rack.</h2>
+    </div>
+
+    <div class="acts">
+      <article class="act reveal">
+        <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
+        <span class="act__when mono">Oct 2026</span>
+        <h3>Act 1 — Harden</h3>
+        <p>Resolve 6 known gaps. Reach 80/100 readiness score.</p>
+      </article>
+      <article class="act reveal">
+        <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
+        <span class="act__when mono">Oct 2026 – Feb 2027</span>
+        <h3>Act 2 — Egypt First</h3>
+        <p>First paying clients. Commercial surface. Payment.</p>
+      </article>
+      <article class="act reveal">
+        <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
+        <span class="act__when mono">Q2–Q3 2027</span>
+        <h3>Act 3 — Platform</h3>
+        <p>Open SDK, ecosystem, v1.5 network layer live.</p>
+      </article>
+      <article class="act reveal">
+        <div class="act__rail" aria-hidden="true"><span class="act__dot act__dot--end"></span></div>
+        <span class="act__when mono">2028+</span>
+        <h3>Act 4 — World Market</h3>
+        <p>GateCore 2.0. Replace every appliance in the rack.</p>
+      </article>
+    </div>
+
+    <blockquote class="vision reveal">
+      We're not racing to match FortiGate feature-for-feature. We're building the category
+      those vendors never owned: software-defined unified on-prem infrastructure.
+      <strong>One platform. Commodity hardware. Full control.</strong>
+    </blockquote>
+  </div>
+</section>
+
+<!-- ============ 3.9 PRICING ============ -->
+<section class="sec sec--soft" id="pricing">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">Pricing</span>
+      <h2>Transparent pricing. No surprise renewals.</h2>
+      <div class="toggle" role="group" aria-label="Billing period">
+        <button class="toggle__btn is-on" type="button" data-cycle="annual" aria-pressed="true">Annual</button>
+        <button class="toggle__btn" type="button" data-cycle="monthly" aria-pressed="false">Monthly</button>
+      </div>
+    </div>
+
+    <div class="plans">
+      <article class="plan reveal">
+        <h3>Trial</h3>
+        <div class="plan__price"><span class="plan__num">Free</span><span class="plan__per">30 days</span></div>
+        <p class="plan__for">For evaluation</p>
+        <ul class="plan__list">
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Full feature access</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Time-limited license</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>No card required</li>
+        </ul>
+        <button class="btn btn--outline btn--block js-trial" type="button">Start Free Trial</button>
+      </article>
+
+      <article class="plan reveal">
+        <h3>Community</h3>
+        <div class="plan__price"><span class="plan__num">Free</span><span class="plan__per">perpetual</span></div>
+        <p class="plan__for">For homelab &amp; learning</p>
+        <ul class="plan__list">
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Core proxy + metrics</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Community support</li>
+          <li class="off"><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-minus"/></svg>No ACL / WAF</li>
+        </ul>
+        <button class="btn btn--outline btn--block js-trial" type="button">Download</button>
+      </article>
+
+      <article class="plan plan--pop reveal">
+        <span class="plan__badge">Most Popular</span>
+        <h3>Professional</h3>
+        <div class="plan__price">
+          <span class="plan__num" data-annual="$1,200" data-monthly="$100">$1,200</span>
+          <span class="plan__per" data-annual="/yr per node" data-monthly="/mo per node">/yr per node</span>
+        </div>
+        <p class="plan__for">For SMB &amp; startup infra</p>
+        <ul class="plan__list">
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>ACL &amp; rate limiting</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Full RBAC</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Plugin support</li>
+        </ul>
+        <button class="btn btn--primary btn--block js-trial" type="button">Start Free Trial</button>
+      </article>
+
+      <article class="plan plan--ent reveal">
+        <span class="plan__badge">Best for compliance</span>
+        <h3>Enterprise</h3>
+        <div class="plan__price">
+          <span class="plan__num" data-annual="$3,600" data-monthly="$300">$3,600</span>
+          <span class="plan__per" data-annual="/yr per node" data-monthly="/mo per node">/yr per node</span>
+        </div>
+        <p class="plan__for">For regulated &amp; HA environments</p>
+        <ul class="plan__list">
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>All features</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Priority support</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Audit export</li>
+        </ul>
+        <a class="btn btn--primary btn--block" href="mailto:mosameh2011@outlook.com?subject=GateCore%20Enterprise%20—%20contact%20the%20team">Contact GateCore Team</a>
+      </article>
+
+      <article class="plan plan--site reveal">
+        <span class="plan__badge">Unlimited nodes</span>
+        <h3>Site License</h3>
+        <div class="plan__price">
+          <span class="plan__num" data-annual="$12,000" data-monthly="$1,000">$12,000</span>
+          <span class="plan__per" data-annual="/yr flat" data-monthly="/mo flat">/yr flat</span>
+        </div>
+        <p class="plan__for">For MSPs &amp; large orgs</p>
+        <ul class="plan__list">
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Unlimited nodes in org</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Single API surface</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Named support</li>
+        </ul>
+        <a class="btn btn--primary btn--block" href="mailto:mosameh2011@outlook.com?subject=GateCore%20Site%20License%20—%20contact%20the%20team">Contact GateCore Team</a>
+      </article>
+    </div>
+
+    <p class="plans__note reveal">All plans include: one binary, one API, full documentation. No per-seat dashboards. No module unlocks. One upgrade path.</p>
+  </div>
+</section>
+
+<!-- ============ 3.10 AUDIENCE ============ -->
+<section class="sec sec--white">
+  <div class="container">
+    <div class="sec__head reveal">
+      <span class="eyebrow">Who it's for</span>
+      <h2>Built for teams where downtime is measured in lost trust, not just lost revenue.</h2>
+    </div>
+    <div class="auds">
+      <article class="aud reveal">
+        <span class="aud__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-activity"/></svg></span>
+        <h3>Fintech SREs</h3>
+        <p class="aud__pain">Audit trail gaps, latency spikes, compliance pressure.</p>
+        <p class="aud__proof"><span>Proof</span> Full RBAC + HMAC audit log, sub-ms Go proxy.</p>
+      </article>
+      <article class="aud reveal">
+        <span class="aud__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-heart-pulse"/></svg></span>
+        <h3>Healthcare IT</h3>
+        <p class="aud__pain">Vendor lock-in, opaque firmware, data sovereignty.</p>
+        <p class="aud__proof"><span>Proof</span> On-prem, source delivery, no cloud dependency.</p>
+      </article>
+      <article class="aud reveal">
+        <span class="aud__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-users"/></svg></span>
+        <h3>MSPs</h3>
+        <p class="aud__pain">Managing 12 different consoles for 20 clients.</p>
+        <p class="aud__proof"><span>Proof</span> Site license + a single API surface across all clients.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3.11 CTA ============ -->
+<section class="cta">
+  <div class="container cta__inner reveal">
+    <span class="eyebrow">Get started</span>
+    <h2>Start with a free 30-day trial.<br>No card. No cloud. Just your hardware.</h2>
+    <p class="cta__sub">Questions about migration, HA topology or procurement? Talk to the team that built it.</p>
+    <div class="cta__btns">
+      <button class="btn btn--primary btn--lg js-trial" type="button">Start Free Trial</button>
+      <a class="btn btn--outline btn--lg" href="mailto:mosameh2011@outlook.com?subject=GateCore%20—%20contact%20the%20team">
+        <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-mail"/></svg>
+        Contact GateCore Team
+      </a>
+      <a class="btn btn--wa btn--lg" href="https://wa.me/201028395158?text=Hi%20GateCore%20team%2C%20I%27d%20like%20to%20learn%20more." target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+        Chat on WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ 3.12 FOOTER ============ -->
+<footer class="foot">
+  <div class="container foot__grid">
+    <div class="foot__brand">
+      <a class="brand brand--foot notranslate" translate="no" href="#top" aria-label="GateCore — home">
+        <img class="brand__img" src="assets/gatecore-logo.jpg" alt="" width="40" height="40" loading="lazy" decoding="async">
+        <span class="brand__word" translate="no">GateCore</span>
+      </a>
+      <p class="foot__tag">Unified on-prem infrastructure.<br>Built in Go. Founded in Cairo.</p>
+    </div>
+    <nav aria-label="GateCore">
+      <h4>GateCore</h4>
+      <a href="#product">About</a>
+      <a href="https://www.linkedin.com/company/gatecore" target="_blank" rel="noopener">LinkedIn</a>
+    </nav>
+    <nav aria-label="Product">
+      <h4>Product</h4>
+      <a href="#product">Features</a>
+      <a href="#demo">Screenshots</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+    <nav aria-label="Support">
+      <h4>Support</h4>
+      <a href="https://www.linkedin.com/company/gatecore" target="_blank" rel="noopener">Documentation</a>
+      <a href="https://wa.me/201028395158" target="_blank" rel="noopener">WhatsApp +20 10 2839 5158</a>
+      <a href="mailto:mosameh2011@outlook.com">mosameh2011@outlook.com</a>
+    </nav>
+    <nav aria-label="Legal">
+      <h4>Legal</h4>
+      <a href="#pricing">License</a>
+      <a href="#pricing">Privacy</a>
+    </nav>
+  </div>
+  <div class="container foot__bottom">
+    <span>© 2026 GateCore. Founded in Cairo, Egypt.</span>
+    <span class="foot__contacts">
+      <a href="https://wa.me/201028395158" target="_blank" rel="noopener" class="mono">+20 10 2839 5158</a>
+      <a href="mailto:mosameh2011@outlook.com" class="mono">mosameh2011@outlook.com</a>
+    </span>
+  </div>
+</footer>
+
+<!-- ============ TRIAL MODAL ============ -->
+<div class="modal" id="trialModal" hidden>
+  <div class="modal__backdrop" data-close></div>
+  <div class="modal__box" role="dialog" aria-modal="true" aria-labelledby="trialTitle">
+    <button class="modal__x" type="button" data-close aria-label="Close dialog">
+      <svg class="ic" aria-hidden="true" focusable="false"><use href="#i-x"/></svg>
+    </button>
+    <div id="trialFormWrap">
+      <span class="eyebrow">Free 30-day trial</span>
+      <h3 id="trialTitle">Get the GateCore binary</h3>
+      <p class="modal__sub">Full feature access, no card. We'll send the zip and your Ed25519 trial license.</p>
+      <form id="trialForm" novalidate>
+        <label for="trialName">Name</label>
+        <input id="trialName" name="name" type="text" required autocomplete="name" placeholder="Mohamed Sameh">
+        <label for="trialEmail">Work email</label>
+        <input id="trialEmail" name="email" type="email" required autocomplete="email" placeholder="you@company.com">
+        <label for="trialCompany">Company <span class="opt">(optional)</span></label>
+        <input id="trialCompany" name="company" type="text" autocomplete="organization" placeholder="Acme Financial">
+        <button class="btn btn--primary btn--block" type="submit">Request the download</button>
+        <p class="modal__fine">Opens your email client — nothing is stored on this page.</p>
+      </form>
+    </div>
+    <div id="trialDoneWrap" hidden>
+      <span class="modal__ok" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-check-circle"/></svg></span>
+      <h3>Request ready</h3>
+      <p class="modal__sub">Your email client should be open with the details filled in. If it didn't open, email <a href="mailto:mosameh2011@outlook.com">mosameh2011@outlook.com</a> directly, or message us on <a href="https://wa.me/201028395158" target="_blank" rel="noopener">WhatsApp</a>.</p>
+      <button class="btn btn--outline btn--block" type="button" data-close>Close</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=arabic-toggle-2" defer></script>
+
+<!-- Floating WhatsApp -->
+<a class="fab" href="https://wa.me/201028395158?text=Hi%20GateCore%20team%2C%20I%27d%20like%20to%20learn%20more." target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+  <span class="fab__tip">Chat on WhatsApp</span>
+</a>
+</body>
+</html>
