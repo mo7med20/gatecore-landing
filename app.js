@@ -6,6 +6,7 @@
    4. Pricing annual/monthly toggle
    5. Trial modal (focus trap) + mailto hand-off
    6. Product showcase tabs (ARIA tab pattern)
+   7. Developer docs tabs + clipboard copy
 */
 (function () {
   'use strict';
@@ -228,6 +229,18 @@
   AR['Real-time Alerting (Webhook/Slack/Email)'] = 'تنبيهات فورية عبر Webhook وSlack والبريد';
   AR['HMAC tamper-proof audit trail'] = 'سجل تدقيق محمي من التلاعب عبر HMAC';
   AR['Priority SLA support & onboarding'] = 'دعم SLA ذو أولوية وتهيئة';
+  AR['foot.docs'] = 'التوثيق التقني';
+  AR['docs.eyebrow'] = 'دليل البدء السريع';
+  AR['docs.title'] = 'جاهز للتشغيل في ٦٠ ثانية';
+  AR['docs.sub'] = 'بدون تبعيات أو قواعد بيانات خارجية. تعرّف على سهولة نشر GateCore وإعداده وأتمتته.';
+  AR['docs.tab.install'] = '١. التثبيت السريع';
+  AR['docs.tab.config'] = '٢. ملف الإعدادات';
+  AR['docs.tab.api'] = '٣. واجهة برمجة التطبيقات (API)';
+  AR['docs.tab.cli'] = '٤. أوامر التشغيل والإدارة';
+  AR['docs.tab.license'] = '٥. ترخيص معزول عن الشبكة';
+  AR['Copy'] = 'نسخ'; AR['Copied!'] = 'تم النسخ'; AR['Copy failed'] = 'تعذر النسخ';
+  AR['Copy to clipboard'] = 'نسخ إلى الحافظة';
+  AR['Documentation snippets'] = 'مقتطفات التوثيق';
   var enText = [];
   var enAttrs = [];
   var activeCycle = 'annual';
@@ -582,6 +595,73 @@
         else if (e.key === 'Home') next = tabs[0];
         else if (e.key === 'End') next = tabs[tabs.length - 1];
         if (next) { e.preventDefault(); selectTab(next, true); }
+      });
+    });
+  }
+
+  /* ============================================================
+     7. DEVELOPER DOCS TABS + COPY
+     ============================================================ */
+  var docsTablist = $('.docs-tabs');
+  if (docsTablist) {
+    var docsTabs = $$('.docs-tab', docsTablist);
+    function selectDocsTab(button, focus) {
+      docsTabs.forEach(function (tab) {
+        var selected = tab === button;
+        tab.classList.toggle('is-on', selected);
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false');
+        tab.tabIndex = selected ? 0 : -1;
+        var panel = document.getElementById(tab.getAttribute('aria-controls'));
+        if (panel) panel.hidden = !selected;
+      });
+      if (focus) button.focus();
+    }
+    docsTabs.forEach(function (button, i) {
+      button.addEventListener('click', function () { selectDocsTab(button, false); });
+      button.addEventListener('keydown', function (e) {
+        var next = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = docsTabs[(i + 1) % docsTabs.length];
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = docsTabs[(i - 1 + docsTabs.length) % docsTabs.length];
+        else if (e.key === 'Home') next = docsTabs[0];
+        else if (e.key === 'End') next = docsTabs[docsTabs.length - 1];
+        if (next) { e.preventDefault(); selectDocsTab(next, true); }
+      });
+    });
+
+    var copyStatus = $('.docs-copy-status');
+    function copyFallback(value) {
+      var field = document.createElement('textarea');
+      field.value = value;
+      field.setAttribute('readonly', 'readonly');
+      field.style.position = 'fixed'; field.style.top = '-1000px'; field.style.opacity = '0';
+      document.body.appendChild(field); field.select();
+      var copied = false;
+      try { copied = document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(field);
+      return copied;
+    }
+    $$('.js-copy', $('.docs-section')).forEach(function (button) {
+      button.addEventListener('click', function () {
+        var pane = button.parentNode.parentNode;
+        var code = $('code', pane);
+        var value = code ? code.textContent : '';
+        var label = $('span', button);
+        var original = label ? label.textContent : '';
+        if (!value) return;
+
+        function showResult(success) {
+          var message = success ? (AR['Copied!'] || 'Copied!') : (AR['Copy failed'] || 'Copy failed');
+          if (label) label.textContent = message;
+          if (copyStatus) copyStatus.textContent = message;
+          window.setTimeout(function () {
+            if (label) label.textContent = original;
+          }, 2000);
+        }
+        if (window.isSecureContext && navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(value).then(function () { showResult(true); }, function () { showResult(copyFallback(value)); });
+        } else {
+          showResult(copyFallback(value));
+        }
       });
     });
   }
