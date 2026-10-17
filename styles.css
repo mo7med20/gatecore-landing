@@ -617,6 +617,9 @@ html:not(.js) .demo-panel[hidden]{display:block; margin-bottom:24px}
 .modal__box input::placeholder{color:#8B99B0}
 .modal__box form .btn{margin-top:14px}
 .modal__fine{font-size:12.5px; color:var(--muted); text-align:center; margin-top:12px}
+.trial__direct{margin-top:16px;padding-top:16px;border-top:1px solid var(--line);text-align:center}
+.trial__direct p{font-size:13px;color:var(--muted);margin:0 0 8px}
+.trial__direct p:last-child{margin:10px 0 0}
 .modal__ok{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--green-50); color:var(--green-600); margin-bottom:16px}
 .modal__ok .ic{width:28px; height:28px}
 .modal__box a{color:var(--blue); text-decoration:underline}

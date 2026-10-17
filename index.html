@@ -71,9 +71,9 @@
 
     <nav class="nav__drawer" id="nav-drawer" aria-label="Primary">
       <ul class="nav__links">
-        <li><a href="#demo" data-i18n="nav.product">Product</a></li>
-        <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
+        <li><a href="#product" data-i18n="nav.product">Product</a></li>
         <li><a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a></li>
+        <li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li>
         <li><a href="https://www.linkedin.com/company/gatecore" target="_blank" rel="noopener" data-i18n="nav.docs">Docs</a></li>
       </ul>
       <div class="nav__drawer-cta">
@@ -123,9 +123,9 @@
       </h1>
 
       <p class="hero__sub">
-        GateCore replaces your reverse proxy, firewall, API gateway, load balancer,
-        and VPN appliance — on commodity x86 hardware — with a single
-        software-defined platform your team actually understands.
+        GateCore replaces your reverse proxy, Web Application Firewall (WAF), load balancer,
+        and SIEM log forwarder — on commodity x86 hardware — with a single 30MB zero-dependency
+        binary with built-in Web UI and tamper-evident audit trails.
       </p>
 
       <div class="hero__cta">
@@ -134,9 +134,9 @@
       </div>
 
       <ul class="hero__stats">
-        <li><strong class="mono">0.8ms</strong><span>median proxy overhead</span></li>
-        <li><strong class="mono">1</strong><span>binary to deploy</span></li>
-        <li><strong class="mono">6</strong><span>appliances retired</span></li>
+        <li><strong class="mono">&lt; 1ms</strong><span>median proxy overhead</span></li>
+        <li><strong class="mono">1</strong><span>single static binary</span></li>
+        <li><strong class="mono">3-Node</strong><span>quorum HA failover</span></li>
       </ul>
     </div>
 
@@ -294,33 +294,43 @@
 
     <div class="timeline">
       <article class="ver ver--now reveal">
-        <div class="ver__top"><span class="ver__tag">Available Now</span><span class="mono ver__num">v1.0</span></div>
-        <h3>Secure App Gateway</h3>
+        <div class="ver__top"><span class="ver__tag">Available Now</span><span class="mono ver__num">v1.0 GA</span></div>
+        <h3>Enterprise ADC &amp; Security</h3>
         <ul>
-          <li>Reverse proxy</li><li>Load balancing</li><li>TLS termination</li>
-          <li>ACL &amp; RBAC</li><li>Metrics</li><li>Plugin system</li>
+          <li>High-Performance Reverse Proxy</li>
+          <li>OWASP Top 10 WAF &amp; Rate Limiter</li>
+          <li>GeoIP Country Filter</li>
+          <li>Real-time SIEM Export (CEF/LEEF)</li>
+          <li>3-Node Quorum Cluster HA</li>
+          <li>HMAC Tamper-Evident Audit Log</li>
         </ul>
       </article>
 
       <article class="ver reveal">
-        <div class="ver__top"><span class="ver__tag">Q1 2027</span><span class="mono ver__num">v1.1</span></div>
-        <h3>App + API Security</h3>
+        <div class="ver__top"><span class="ver__tag">Q2 2027</span><span class="mono ver__num">v1.1</span></div>
+        <h3>Advanced Traffic &amp; Telemetry</h3>
         <ul>
-          <li>WAF</li><li>Rate limiting</li><li>API key management</li>
-          <li>Threat analytics</li>
+          <li>Distributed Redis Quotas</li>
+          <li>eBPF Kernel Bypass Filters</li>
+          <li>Extended Metrics Time-Series</li>
+          <li>Automated Canary Routing</li>
         </ul>
       </article>
 
       <article class="ver reveal">
-        <div class="ver__top"><span class="ver__tag">Q3 2027</span><span class="mono ver__num">v1.5</span></div>
-        <h3>On-Prem Security Gateway</h3>
-        <ul><li>Firewall</li><li>NAT</li><li>VPN</li><li>DNS</li><li>DHCP</li></ul>
+        <div class="ver__top"><span class="ver__tag">Q4 2027</span><span class="mono ver__num">v1.5</span></div>
+        <h3>On-Prem Sovereign Network</h3>
+        <ul>
+          <li>Software-Defined WireGuard VPN</li>
+          <li>Authoritative DNS &amp; DHCP Engine</li>
+          <li>Air-Gapped HSM Key Integration</li>
+        </ul>
       </article>
 
       <article class="ver reveal">
         <div class="ver__top"><span class="ver__tag">2028</span><span class="mono ver__num">v2.0</span></div>
-        <h3>Unified Platform</h3>
-        <ul><li>Replace every network &amp; security appliance</li></ul>
+        <h3>Unified Hardware Replacement</h3>
+        <ul><li>Complete Datacenter Appliance Retirement</li></ul>
       </article>
     </div>
   </div>
@@ -336,33 +346,33 @@
     <div class="features">
       <article class="feat reveal">
         <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-zap"/></svg></span>
-        <h3>Go-native performance</h3>
-        <p>Sub-millisecond proxy, zero GC pressure under sustained load. Runs lean on commodity x86.</p>
-      </article>
-      <article class="feat reveal">
-        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-key"/></svg></span>
-        <h3>Ed25519 License System</h3>
-        <p>Tier-based feature enforcement. Trial → Community → Professional → Enterprise, cleanly gated.</p>
-      </article>
-      <article class="feat reveal">
-        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-activity"/></svg></span>
-        <h3>Live Traffic Dashboard</h3>
-        <p>Real-time SSE traffic stream, historical metrics snapshots, Prometheus-compatible <code class="notranslate" translate="no">/metrics</code>.</p>
+        <h3>Kernel-Level Performance</h3>
+        <p>Sub-millisecond proxying, Linux zero-copy <code>splice()</code> data transfer, connection pooling, and EWMA latency-aware balancing.</p>
       </article>
       <article class="feat reveal">
         <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-shield"/></svg></span>
-        <h3>Full RBAC &amp; Audit</h3>
-        <p>Every API call, every config change — logged, attributed, exportable. Multi-role, multi-tenant.</p>
+        <h3>Built-in OWASP WAF &amp; GeoIP</h3>
+        <p>Block SQL injection, cross-site scripting (XSS), bad bots, and restrict traffic by country without external cloud subscriptions.</p>
       </article>
       <article class="feat reveal">
-        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-blocks"/></svg></span>
-        <h3>Plugin Architecture</h3>
-        <p>Ship your logic as a plugin. The platform calls it; the audit trail owns it. SDK in v1.5.</p>
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-file-check"/></svg></span>
+        <h3>SIEM &amp; Compliance Ready</h3>
+        <p>HMAC-SHA256 tamper-evident audit logs. Native CEF, LEEF, and RFC 5424 JSON streaming directly into Splunk, QRadar, and ELK.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-shield"/></svg></span>
+        <h3>Zero-Downtime Cluster HA</h3>
+        <p>Deterministic quorum-based leader election and leader-push config replication. High availability without complex etcd or ZooKeeper clusters.</p>
+      </article>
+      <article class="feat reveal">
+        <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-branch"/></svg></span>
+        <h3>Mutual TLS &amp; Per-Path Security</h3>
+        <p>Automated ACME Let's Encrypt certificates, route-prefix client certificate verification, and token revocation.</p>
       </article>
       <article class="feat reveal">
         <span class="feat__icon" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-package"/></svg></span>
-        <h3>One Binary, Full Stack</h3>
-        <p>No microservice sprawl. Deploy with a single zip, manage with a single API, upgrade with one command.</p>
+        <h3>Single Binary Deployment</h3>
+        <p>30MB static binary. One shell command to install on Ubuntu, Debian, or RHEL. Zero external runtime dependencies.</p>
       </article>
     </div>
   </div>
@@ -395,20 +405,21 @@
           <span class="dot dot--r" aria-hidden="true"></span>
           <span class="dot dot--y" aria-hidden="true"></span>
           <span class="dot dot--g" aria-hidden="true"></span>
-          <span class="mono flowpanel__file">$ ./gatecore start</span>
+          <span class="mono flowpanel__file">$ sudo ./install-prod.sh</span>
         </div>
-        <pre class="demo-term mono"><span class="term-dim">GateCore v1.0.0 — Unified On-Prem Infrastructure Platform</span>
+        <pre class="demo-term mono"><span class="term-dim"># 1-Line Production Installer (Ubuntu 24.04 · Debian 13 · RHEL 9)</span>
+<span class="term-ok">$</span> sudo ./install-prod.sh
 
-<span class="term-ok"></span> License validated       <span class="term-dim">Professional · node-1 · expires 2027-10-11</span>
-<span class="term-ok"></span> RBAC loaded             <span class="term-dim">3 roles · 12 permissions</span>
-<span class="term-ok"></span> ACL engine ready        <span class="term-dim">4 rules active</span>
-<span class="term-ok"></span> TLS certificates loaded <span class="term-dim">RSA-2048 · auto-renew enabled</span>
-<span class="term-ok"></span> Plugin system online    <span class="term-dim">2 plugins registered</span>
-<span class="term-ok"></span> Management API          <span class="term-dim">:8443 (TLS)</span>
-<span class="term-ok"></span> Traffic engine          <span class="term-dim">:80 · :443</span>
-<span class="term-ok"></span> Metrics endpoint        <span class="term-dim">/metrics/json · Prometheus /metrics</span>
+<span class="term-ok">✔</span> Host OS detected        <span class="term-dim">Ubuntu 24.04 LTS (x86_64)</span>
+<span class="term-ok">✔</span> Runtime state created   <span class="term-dim">/var/lib/gatecore (mode 0700)</span>
+<span class="term-ok">✔</span> Systemd unit installed  <span class="term-dim">/etc/systemd/system/gatecore.service</span>
+<span class="term-ok">✔</span> WAF engine initialized  <span class="term-dim">OWASP Top 10 rules active</span>
+<span class="term-ok">✔</span> SIEM pipeline ready     <span class="term-dim">CEF / LEEF / JSON streaming</span>
+<span class="term-ok">✔</span> Cluster coordination    <span class="term-dim">3-node quorum ready</span>
+<span class="term-ok">✔</span> Management UI online    <span class="term-dim">https://127.0.0.1:9090</span>
+<span class="term-ok">✔</span> Traffic listener        <span class="term-dim">0.0.0.0:443 (EWMA load balancer)</span>
 
-<span class="term-rdy">→ GateCore ready.</span></pre>
+<span class="term-rdy">→ GateCore service active and running.</span></pre>
         <div class="flowpanel__foot">
           <span class="mono"><span class="pulse" aria-hidden="true"></span> uptime 00:04:12</span>
           <span class="mono flowpanel__muted">0 errors · 8.3k req/s</span>
@@ -576,11 +587,13 @@
           <span class="plan__num" data-annual="$1,200" data-monthly="$100">$1,200</span>
           <span class="plan__per" data-annual="/yr per node" data-monthly="/mo per node">/yr per node</span>
         </div>
-        <p class="plan__for">For SMB &amp; startup infra</p>
+        <p class="plan__for">For growing SaaS &amp; API backends</p>
         <ul class="plan__list">
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>ACL &amp; rate limiting</li>
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Full RBAC</li>
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Plugin support</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>EWMA adaptive load balancing</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Mutual TLS (mTLS) &amp; ACME auto-certs</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Backend connection pooling</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Dynamic backend CRUD REST API</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Full Web management dashboard</li>
         </ul>
         <button class="btn btn--primary btn--block js-trial" type="button">Start Free Trial</button>
       </article>
@@ -592,13 +605,17 @@
           <span class="plan__num" data-annual="$3,600" data-monthly="$300">$3,600</span>
           <span class="plan__per" data-annual="/yr per node" data-monthly="/mo per node">/yr per node</span>
         </div>
-        <p class="plan__for">For regulated &amp; HA environments</p>
+        <p class="plan__for">For banks, healthcare &amp; HA environments</p>
         <ul class="plan__list">
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>All features</li>
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Priority support</li>
-          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Audit export</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><strong>3-Node Cluster HA &amp; Quorum Failover</strong></li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><strong>OWASP Top 10 Web App Firewall (WAF)</strong></li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><strong>Real-time SIEM Forwarding (CEF/LEEF)</strong></li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><strong>GeoIP Geolocation Filtering</strong></li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg><strong>Real-time Alerting (Webhook/Slack/Email)</strong></li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>HMAC tamper-proof audit trail</li>
+          <li><svg class="ic ic--sm" aria-hidden="true" focusable="false"><use href="#i-check"/></svg>Priority SLA support &amp; onboarding</li>
         </ul>
-        <a class="btn btn--primary btn--block" href="mailto:mosameh2011@outlook.com?subject=GateCore%20Enterprise%20—%20contact%20the%20team">Contact GateCore Team</a>
+        <a class="btn btn--primary btn--block" href="mailto:mosameh2011@outlook.com?subject=GateCore%20Enterprise%20—%20inquiry">Contact GateCore Team</a>
       </article>
 
       <article class="plan plan--site reveal">
@@ -738,6 +755,11 @@
         <button class="btn btn--primary btn--block" type="submit">Request the download</button>
         <p class="modal__fine">Opens your email client — nothing is stored on this page.</p>
       </form>
+      <div class="trial__direct">
+        <p>Need it instantly? Connect with us directly:</p>
+        <a class="btn btn--outline btn--block btn--sm" href="https://wa.me/201028395158?text=Hi%20GateCore%20team%2C%20I%27d%20like%20to%20get%20a%2030-day%20trial%20license." target="_blank" rel="noopener">Instant Request via WhatsApp</a>
+        <p>Prefer email? <a href="mailto:mosameh2011@outlook.com">mosameh2011@outlook.com</a></p>
+      </div>
     </div>
     <div id="trialDoneWrap" hidden>
       <span class="modal__ok" aria-hidden="true"><svg class="ic" focusable="false"><use href="#i-check-circle"/></svg></span>
