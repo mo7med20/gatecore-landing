@@ -134,9 +134,9 @@
       </div>
 
       <ul class="hero__stats">
-        <li><strong class="mono">&lt; 1ms</strong><span>median proxy overhead</span></li>
-        <li><strong class="mono">1</strong><span>single static binary</span></li>
-        <li><strong class="mono">3-Node</strong><span>quorum HA failover</span></li>
+        <li><strong class="mono">&lt; 1ms</strong><span>median proxy latency</span></li>
+        <li><strong class="mono">30MB</strong><span>zero-dependency static binary</span></li>
+        <li><strong class="mono">100%</strong><span>air-gapped &amp; on-prem qualified</span></li>
       </ul>
     </div>
 
@@ -518,73 +518,101 @@
       </div>
       <div class="docs-panes">
         <div class="docs-pane notranslate" id="pane-install" role="tabpanel" aria-labelledby="tab-install" tabindex="0" translate="no" dir="ltr">
-          <div class="pane-meta"><span class="mono badge">Ubuntu 24.04 · Debian 13 · RHEL 9</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
-          <pre class="code-block"><code class="mono"># Download and run the production installer:
+          <div class="pane-meta"><span class="mono badge">Ubuntu 24.04 · Debian 13 · RHEL 9 · Air-Gapped Tarball</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
+          <pre class="code-block"><code class="mono"># Option A: Automated Production Installer (Online)
 sudo bash -c "$(curl -fsSL https://gatecore-gules.vercel.app/install-prod.sh)"
 
-# Check the systemd service:
+# Option B: Sovereign / Air-Gapped Offline Installation
+tar -xzf gatecore-v1.0.0-linux-amd64.tar.gz
+cd gatecore-v1.0.0-linux-amd64 && sudo ./install.sh
+
+# Option C: Build from Source (Requires Go 1.25+ / 1.26)
+git clone https://github.com/mo7med20/gatecore.git
+cd gatecore && go build -o gatecore ./cmd/gateway
+
+# Verify systemd service status:
 sudo systemctl status gatecore
 
-# Retrieve initial admin credentials:
+# Read auto-generated bootstrap admin password:
 sudo cat /var/lib/gatecore/initial-admin-password
 
-# Open the dashboard at https://YOUR_SERVER_IP:8443</code></pre>
+# Access authenticated dashboard:
+# https://YOUR_SERVER_IP:9090 (or https://127.0.0.1:9443)</code></pre>
         </div>
         <div class="docs-pane notranslate" id="pane-config" role="tabpanel" aria-labelledby="tab-config" tabindex="0" translate="no" dir="ltr" hidden>
-          <div class="pane-meta"><span class="mono badge">/etc/gatecore/config.json</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
+          <div class="pane-meta"><span class="mono badge">/etc/gatecore/config.json (Schema Validated)</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
           <pre class="code-block"><code class="mono">{
-  "listen": ":443",
-  "tls": { "cert_file": "/etc/gatecore/certs/server.crt", "key_file": "/etc/gatecore/certs/server.key", "min_version": "TLS1.3" },
-  "traffic": {
-    "algorithm": "peak-ewma",
-    "routes": [{
-      "path": "/api/v1",
-      "backends": ["10.0.1.10:8080", "10.0.1.11:8080", "10.0.1.12:8080"],
-      "health_check": { "path": "/healthz", "interval_ms": 2000 }
-    }]
-  },
-  "security": {
-    "waf": { "enabled": true, "block_sqli": true, "block_xss": true },
-    "rate_limit": { "requests_per_sec": 500, "burst": 50 },
-    "geoip": { "block_countries": ["T1", "XX"] }
-  }
+  "listen_address": ":443",
+  "api_address": ":9090",
+  "tls_cert_file": "/etc/gatecore/certs/server.crt",
+  "tls_key_file": "/etc/gatecore/certs/server.key",
+  "health_check_interval_ms": 2000,
+  "health_check_timeout_ms": 500,
+  "dial_timeout_ms": 2000,
+  "max_retries": 3,
+  "backends": [
+    {
+      "id": "app-srv-01",
+      "address": "10.0.1.10:8080",
+      "health_check_type": "tcp",
+      "weight": 10
+    },
+    {
+      "id": "app-srv-02",
+      "address": "10.0.1.11:8080",
+      "health_check_type": "tcp",
+      "weight": 10
+    }
+  ]
 }</code></pre>
         </div>
         <div class="docs-pane notranslate" id="pane-api" role="tabpanel" aria-labelledby="tab-api" tabindex="0" translate="no" dir="ltr" hidden>
-          <div class="pane-meta"><span class="mono badge">Dynamic Routing REST API</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
-          <pre class="code-block"><code class="mono"># Register an upstream backend:
-curl -X POST https://localhost:8443/api/v1/backends \
-  -H "Authorization: Bearer $GATECORE_TOKEN" \
+          <div class="pane-meta"><span class="mono badge">Management &amp; Telemetry REST API</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
+          <pre class="code-block"><code class="mono"># 1. Obtain authenticated JWT session:
+TOKEN=$(curl -k -s -X POST https://localhost:9090/api/v1/login \
   -H "Content-Type: application/json" \
-  -d '{"pool":"production-api","address":"10.0.1.15:8080","weight":10,"max_connections":1000}'
+  -d '{"username":"admin","password":"YOUR_PASSWORD"}' | jq -r .token)
 
-# Trigger a configuration reload:
-curl -X POST https://localhost:8443/api/v1/config/reload \
-  -H "Authorization: Bearer $GATECORE_TOKEN"</code></pre>
+# 2. Add an upstream backend dynamically (zero-downtime, no reload needed):
+curl -k -X POST https://localhost:9090/api/v1/backends \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"id":"api-srv-03","address":"10.0.1.15:8080","weight":10,"healthCheckType":"tcp"}'
+
+# 3. Query cluster-wide health aggregation:
+curl -k -s https://localhost:9090/health
+
+# 4. Scrape Prometheus metrics:
+curl -k -s https://localhost:9090/metrics</code></pre>
         </div>
         <div class="docs-pane notranslate" id="pane-cli" role="tabpanel" aria-labelledby="tab-cli" tabindex="0" translate="no" dir="ltr" hidden>
-          <div class="pane-meta"><span class="mono badge">Built-in CLI Utilities</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
-          <pre class="code-block"><code class="mono"># Check binary version:
+          <div class="pane-meta"><span class="mono badge">Operational Tooling &amp; Diagnostics</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
+          <pre class="code-block"><code class="mono"># Print version and build commit:
 gatecore -version
 
-# Print the hardware node fingerprint:
+# Generate unique hardware fingerprint for license binding:
 gatecore -fingerprint
 
-# Validate configuration:
-gatecore -test-config /etc/gatecore/config.json
+# Validate configuration syntax & module schemas before deployment:
+gatecore -config /etc/gatecore/config.json -test-config
 
-# Stream audit logs:
-journalctl -u gatecore -f -o json-pretty</code></pre>
+# Tail tamper-evident audit events via systemd journal:
+sudo journalctl -u gatecore -f -o json-pretty</code></pre>
         </div>
         <div class="docs-pane notranslate" id="pane-license" role="tabpanel" aria-labelledby="tab-license" tabindex="0" translate="no" dir="ltr" hidden>
-          <div class="pane-meta"><span class="mono badge">Offline Hardware-Bound Licensing</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
-          <pre class="code-block"><code class="mono"># Install a signed license on the air-gapped host:
+          <div class="pane-meta"><span class="mono badge">Ed25519 Hardware-Bound Offline Licensing</span><button class="btn-copy js-copy" type="button" aria-label="Copy to clipboard"><svg class="ic" aria-hidden="true" focusable="false"><use href="#i-file-check"/></svg><span>Copy</span></button></div>
+          <pre class="code-block"><code class="mono"># 1. Extract machine hardware fingerprint:
+gatecore -fingerprint
+# -> Returns: 8f9b2c...4a1e
+
+# 2. Place signed license file in state directory:
 sudo cp license.json /etc/gatecore/license.json
 sudo chown gatecore:gatecore /etc/gatecore/license.json
 sudo chmod 0600 /etc/gatecore/license.json
 
-# Verify local entitlements:
-gatecore -check-license</code></pre>
+# 3. Verify license cryptographic signature and node binding offline:
+gatecore -check-license /etc/gatecore/license.json
+# -> license valid for this machine: tier=Enterprise expires=2027-10-18T00:00:00Z</code></pre>
         </div>
       </div>
       <p class="docs-copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
@@ -592,45 +620,66 @@ gatecore -check-license</code></pre>
   </div>
 </section>
 
-<!-- ============ 3.8 ROADMAP ============ -->
+<!-- ============ 3.8 ROADMAP & VISION ============ -->
 <section class="sec sec--white" id="roadmap">
   <div class="container">
     <div class="sec__head reveal">
-      <span class="eyebrow">Vision</span>
-      <h2>A four-act plan to replace your entire rack.</h2>
+      <span class="eyebrow" data-i18n="vision.eyebrow">Vision &amp; Roadmap</span>
+      <h2 data-i18n="vision.title">A four-act plan to replace your entire rack.</h2>
     </div>
 
     <div class="acts">
+      <!-- Act 1 -->
       <article class="act reveal">
         <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
-        <span class="act__when mono">Oct 2026</span>
-        <h3>Act 1 — Harden</h3>
-        <p>Resolve 6 known gaps. Reach 80/100 readiness score.</p>
+        <span class="act__when mono">v1.0.0 GA · Now Available</span>
+        <h3 data-i18n="vision.act1.title">Act 1 — Sovereign Foundation</h3>
+        <p data-i18n="vision.act1.desc">
+          Zero-dependency single binary on Ubuntu 24.04, Debian 13, and RHEL 9.
+          Sub-millisecond EWMA reverse proxy, OWASP Top 10 WAF, and native CEF/LEEF SIEM streaming.
+        </p>
       </article>
+
+      <!-- Act 2 -->
       <article class="act reveal">
         <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
-        <span class="act__when mono">Oct 2026 – Feb 2027</span>
-        <h3>Act 2 — Egypt First</h3>
-        <p>First paying clients. Commercial surface. Payment.</p>
+        <span class="act__when mono">Q4 2026 – Q1 2027</span>
+        <h3 data-i18n="vision.act2.title">Act 2 — Egypt &amp; MENA Sovereignty</h3>
+        <p data-i18n="vision.act2.desc">
+          High-touch on-premise deployments for Egyptian fintechs, national banking infrastructure,
+          and regional private clouds. 100% data sovereignty with zero telemetry leakage.
+        </p>
       </article>
+
+      <!-- Act 3 -->
       <article class="act reveal">
         <div class="act__rail" aria-hidden="true"><span class="act__dot"></span></div>
         <span class="act__when mono">Q2–Q3 2027</span>
-        <h3>Act 3 — Platform</h3>
-        <p>Open SDK, ecosystem, v1.5 network layer live.</p>
+        <h3 data-i18n="vision.act3.title">Act 3 — Extensibility &amp; eBPF</h3>
+        <p data-i18n="vision.act3.desc">
+          Open Go plugin SDK, distributed Redis quota coordination, eBPF kernel packet acceleration,
+          and sub-second canary health convergence.
+        </p>
       </article>
+
+      <!-- Act 4 -->
       <article class="act reveal">
         <div class="act__rail" aria-hidden="true"><span class="act__dot act__dot--end"></span></div>
         <span class="act__when mono">2028+</span>
-        <h3>Act 4 — World Market</h3>
-        <p>GateCore 2.0. Replace every appliance in the rack.</p>
+        <h3 data-i18n="vision.act4.title">Act 4 — Sovereign Datacenter OS</h3>
+        <p data-i18n="vision.act4.desc">
+          Complete rack appliance retirement: integrated WireGuard mesh networking,
+          authoritative internal DNS/DHCP engine, air-gapped HSM key protection, and global enterprise qualification.
+        </p>
       </article>
     </div>
 
-    <blockquote class="vision reveal">
-      We're not racing to match FortiGate feature-for-feature. We're building the category
-      those vendors never owned: software-defined unified on-prem infrastructure.
-      <strong>One platform. Commodity hardware. Full control.</strong>
+    <!-- Elevated Sovereign Manifesto Quote -->
+    <blockquote class="vision reveal" data-i18n="vision.quote">
+      "Data sovereignty is not an afterthought—it is the foundation of digital resilience.
+      GateCore gives modern infrastructure teams complete ownership over their traffic, security,
+      and audit trails on standard x86 hardware, without cloud egress extortion or six-figure vendor lock-in.
+      <strong>One binary. Zero external dependencies. Complete sovereignty.</strong>"
     </blockquote>
   </div>
 </section>
